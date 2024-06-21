@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ListZoomUsers from "./ListZoomUsers";
+import { Box, Button, Stack, Typography } from "@mui/material";
 
 export default function UpdateCCMembers({ setCurrentMembers }) {
   const [selectedUsername, setSelectedUsername] = useState(false);
@@ -33,16 +34,34 @@ export default function UpdateCCMembers({ setCurrentMembers }) {
 
   return (
     <>
-      <ListZoomUsers
-        setSelectedUsername={setSelectedUsername}
-        setSelectedEmail={setSelectedEmail}
-        setSelectedId={setSelectedId}
-      />
-      {selectedUsername ? (
-        <button type="button" className="btn" onClick={handleUpdateCCMembers}>
-          Add Call Queue Member
-        </button>
-      ) : null}
+      <Typography variant="h4" gutterBottom>
+        Users on Account
+      </Typography>
+      <div>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <ListZoomUsers
+            selectedUsername={selectedUsername}
+            setSelectedUsername={setSelectedUsername}
+            setSelectedEmail={setSelectedEmail}
+            setSelectedId={setSelectedId}
+          />
+          {selectedUsername ? (
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleUpdateCCMembers}
+              sx={{ p: 2 }}
+            >
+              Add Call Queue Member
+            </Button>
+          ) : null}
+        </Stack>
+      </div>
     </>
   );
 }

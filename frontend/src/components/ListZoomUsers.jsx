@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Select, InputLabel, MenuItem, FormControl } from "@mui/material";
 
 export default function ListZoomUsers({
   setSelectedEmail,
   setSelectedId,
   setSelectedUsername,
+  selectedUsername,
 }) {
   const [loading, setLoading] = useState(false);
   const [zoomUsers, setZoomUsers] = useState(false);
@@ -29,12 +31,6 @@ export default function ListZoomUsers({
   }, []);
 
   const handleSelectUser = (e) => {
-    // console.log(e.target.value);
-    // console.log(
-    //   zoomUsers.currentZoomUsers.find(
-    //     (user) => user.user_name === e.target.value
-    //   )
-    // );
     let pickedUser = zoomUsers.currentZoomUsers.find(
       (user) => user.user_name === e.target.value
     );
@@ -46,17 +42,36 @@ export default function ListZoomUsers({
 
   return (
     <>
-      <h2>Users On Account</h2>
-      <select onChange={handleSelectUser}>
-        <option value="Select a User">Select a User</option>
-        {zoomUsers
-          ? zoomUsers.currentZoomUsers.map((user) => (
-              <option key={user.user_id} value={user.user_name}>
-                {user.user_name}
-              </option>
-            ))
-          : null}
-      </select>
+      <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="pick-user-label">User</InputLabel>
+        <Select
+          labelId="pick-user-label"
+          id="select-user-id"
+          value={selectedUsername ? selectedUsername : ""}
+          label="Select a User"
+          onChange={handleSelectUser}
+        >
+          {zoomUsers
+            ? zoomUsers.currentZoomUsers.map((user) => (
+                <MenuItem key={user.user_id} value={user.user_name}>
+                  {user.user_name}
+                </MenuItem>
+              ))
+            : null}
+        </Select>
+      </FormControl>
     </>
   );
 }
+
+// <h2>Users On Account</h2>
+// <select onChange={handleSelectUser}>
+//   <option value="Select a User">Select a User</option>
+//   {zoomUsers
+//     ? zoomUsers.currentZoomUsers.map((user) => (
+//         <option key={user.user_id} value={user.user_name}>
+//           {user.user_name}
+//         </option>
+//       ))
+//     : null}
+// </select>

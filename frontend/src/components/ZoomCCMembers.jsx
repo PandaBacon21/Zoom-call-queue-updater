@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
+import { Alert, Button, Snackbar, Typography } from "@mui/material";
 
 export default function ZoomCCMembers({ currentMembers, setCurrentMembers }) {
   const [loading, setLoading] = useState(false);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -51,6 +53,7 @@ export default function ZoomCCMembers({ currentMembers, setCurrentMembers }) {
       console.log(res.data);
       setCurrentMembers({ currentCCMembers: res.data.Users });
       setRowSelectionModel([]);
+      setOpen(true);
     } catch (e) {
       console.error(e);
     }
@@ -63,14 +66,19 @@ export default function ZoomCCMembers({ currentMembers, setCurrentMembers }) {
     { field: "receive_call", headerName: "Receive Call Status", width: 250 },
   ];
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   return (
     <>
-      <h2>Current Call Queue Members:</h2>
-      {rowSelectionModel.length > 0 ? (
-        <button type="button" className="btn" onClick={handleRowSelection}>
-          Remove from Queue
-        </button>
-      ) : null}
+      <Typography variant="h4" sx={{ m: 2 }} gutterBottom>
+        Current Call Queue Members:
+      </Typography>
       {currentMembers ? (
         <div style={{ height: 300, width: "100%" }}>
           <DataGrid
@@ -89,21 +97,32 @@ export default function ZoomCCMembers({ currentMembers, setCurrentMembers }) {
           />
         </div>
       ) : (
-        <p>Loading...</p>
+        <Typography variant="subtitle1">Loading...</Typography>
       )}
+      {rowSelectionModel.length > 0 ? (
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ p: 2, mt: 2 }}
+          onClick={handleRowSelection}
+        >
+          Remove from Queue
+        </Button>
+      ) : null}
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          User Successfully Removed from Queue
+        </Alert>
+      </Snackbar>
     </>
   );
 }
-
-// {currentMembers ? (
-//   currentMembers.currentCCMembers.map((member) => (
-//     <li key={member.user_id}>
-//       {member.name}{" "}
-//       <button type="button" className="btn">
-//         X
-//       </button>
-//     </li>
-//   ))
-// ) : (
-//   <p>Loading...</p>
-// )}
